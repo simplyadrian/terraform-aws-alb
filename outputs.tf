@@ -1,21 +1,54 @@
-output "aws_lb_zone_id" {
-  value = "${aws_lb.main.zone_id}"
+output "alb_name" {
+  description = "The ARN suffix of the ALB"
+  value       = "${aws_lb.default.name}"
 }
 
-output "aws_lb_dns_name" {
-  value = "${aws_lb.main.dns_name}"
+output "alb_arn" {
+  description = "The ARN of the ALB"
+  value       = "${aws_lb.default.arn}"
 }
 
-output "http_listener_arn" {
-  value      = "${coalesce(aws_lb_listener.http.arn, "")}"
-  depends_on = ["aws_lb_listener.http"]
+output "alb_arn_suffix" {
+  description = "The ARN suffix of the ALB"
+  value       = "${aws_lb.default.arn_suffix}"
 }
 
-output "https_listener_arn" {
-  value      = "${coalesce(aws_lb_listener.https.arn, "")}"
-  depends_on = ["aws_lb_listener.https"]
+output "alb_dns_name" {
+  description = "DNS name of ALB"
+  value       = "${aws_lb.default.dns_name}"
+}
+
+output "alb_zone_id" {
+  description = "The ID of the zone which ALB is provisioned"
+  value       = "${aws_lb.default.zone_id}"
 }
 
 output "security_group_id" {
-  value = "${aws_security_group.load_balancer.id}"
+  description = "The security group ID of the ALB"
+  value       = "${aws_security_group.default.id}"
+}
+
+output "default_target_group_arn" {
+  description = "The default target group ARN"
+  value       = "${aws_lb_target_group.default.arn}"
+}
+
+output "http_listener_arn" {
+  description = "The ARN of the HTTP listener"
+  value       = "${join("", aws_lb_listener.http.*.arn)}"
+}
+
+output "https_listener_arn" {
+  description = "The ARN of the HTTPS listener"
+  value       = "${join("", aws_lb_listener.https.*.arn)}"
+}
+
+output "listener_arns" {
+  description = "A list of all the listener ARNs"
+  value       = "${compact(concat(aws_lb_listener.http.*.arn, aws_lb_listener.https.*.arn))}"
+}
+
+output "access_logs_bucket_id" {
+  description = "The S3 bucket ID for access logs"
+  value       = "${module.access_logs.bucket_id}"
 }
